@@ -694,7 +694,58 @@ return /******/ (function(modules) { // webpackBootstrap
 
 	      canvasContext.translate(this.rotatedOffset.x * exportZoom, this.rotatedOffset.y * exportZoom);
 	      canvasContext.rotate(this.rotation * Math.PI / 180);
-	      canvasContext.drawImage(this.image, 0, 0, zoomedSize.width, zoomedSize.height);
+	      //canvasContext.drawImage(this.image, 0, 0, zoomedSize.width, zoomedSize.height);
+
+	      	var cfLess = this.zoom * exportZoom;
+			// console.log(cfLess);
+
+            var can2 = document.createElement('canvas');
+            can2.width = this.image.width/2;
+            can2.height = this.image.height/2;
+            var ctx2 = can2.getContext('2d');
+
+			if (exportOptions.type === 'image/jpeg') {
+				ctx2.fillStyle = exportOptions.fillBg;
+				ctx2.fillRect(0, 0, can2.width, can2.height);
+			}
+
+			if(cfLess >= .5) {
+				canvasContext.drawImage(this.image, 0, 0, zoomedSize.width, zoomedSize.height);
+            } else if(cfLess >= .25) {
+				// console.log(1);
+
+                ctx2.drawImage(this.image, 0, 0, this.image.width/2, this.image.height/2);
+                ctx2.drawImage(can2, 0, 0, this.image.width/2, this.image.height/2, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+
+                canvasContext.drawImage(can2, 0, 0, this.image.width*cfLess, this.image.height*cfLess, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+            } else if(cfLess >= .1) {
+				// console.log(2);
+
+				ctx2.drawImage(this.image, 0, 0, this.image.width/2, this.image.height/2);
+				ctx2.drawImage(can2, 0, 0, this.image.width/2, this.image.height/2, 0, 0, this.image.width/4, this.image.height/4);
+				ctx2.drawImage(can2, 0, 0, this.image.width/4, this.image.height/4, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+
+				canvasContext.drawImage(can2, 0, 0, this.image.width*cfLess, this.image.height*cfLess, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+			} else if(cfLess >= .05) {
+				// console.log(3);
+
+                ctx2.drawImage(this.image, 0, 0, this.image.width/2, this.image.height/2);
+                ctx2.drawImage(can2, 0, 0, this.image.width/2, this.image.height/2, 0, 0, this.image.width/4, this.image.height/4);
+                ctx2.drawImage(can2, 0, 0, this.image.width/4, this.image.height/4, 0, 0, this.image.width/8, this.image.height/8);
+                ctx2.drawImage(can2, 0, 0, this.image.width/8, this.image.height/8, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+
+                canvasContext.drawImage(can2, 0, 0, this.image.width*cfLess, this.image.height*cfLess, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+            } else {
+				// console.log(4);
+
+                ctx2.drawImage(this.image, 0, 0, this.image.width/2, this.image.height/2);
+                ctx2.drawImage(can2, 0, 0, this.image.width/2, this.image.height/2, 0, 0, this.image.width/4, this.image.height/4);
+                ctx2.drawImage(can2, 0, 0, this.image.width/4, this.image.height/4, 0, 0, this.image.width/8, this.image.height/8);
+                ctx2.drawImage(can2, 0, 0, this.image.width/8, this.image.height/8, 0, 0, this.image.width/16, this.image.height/16);
+                ctx2.drawImage(can2, 0, 0, this.image.width/16, this.image.height/16, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+
+                canvasContext.drawImage(can2, 0, 0, this.image.width*cfLess, this.image.height*cfLess, 0, 0, this.image.width*cfLess, this.image.height*cfLess);
+            }
 
 	      return canvas.toDataURL(exportOptions.type, exportOptions.quality);
 	    }
